@@ -2,6 +2,7 @@ package com.henriquefidelis.literalura.main;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -17,6 +18,8 @@ public class Principal {
     private ConverteDados conversor = new ConverteDados();
 
     public final String ENDERECO = "https://gutendex.com/books/?search=";
+
+    private List<DadosLivro> dadosLivros = new ArrayList<>();
 
     public void exibirMenu() {
         var opcao = -1;
@@ -41,6 +44,9 @@ public class Principal {
                 case 1:
                     buscarDadosLivro();
                     break;
+                case 2:
+                    listarLivrosBuscados();
+                    break;
                 case 0:
                     System.out.println("Saindo...");
                     break;
@@ -57,14 +63,22 @@ public class Principal {
         var nomeCodificado = URLEncoder.encode(nomeLivro, StandardCharsets.UTF_8)
                 .replace("+", "%20");
         var json = consumoAPI.obterDados(ENDERECO + nomeCodificado);
-        System.out.println("JSON retornado:\n" + json);
         DadosResposta dados = conversor.obterDados(json, DadosResposta.class);
 
         List<DadosLivro> livros = dados.livros();
         if (livros == null || livros.isEmpty()) {
             System.out.println("Nenhum livro encontrado.");
         } else {
+            dadosLivros.addAll(livros);
             livros.forEach(System.out::println);
+        }
+    }
+
+    private void listarLivrosBuscados() {
+        if (dadosLivros.isEmpty()) {
+            System.out.println("Ainda não há nenhum livro registrado");
+        } else {
+            dadosLivros.forEach(System.out::println);
         }
     }
 
