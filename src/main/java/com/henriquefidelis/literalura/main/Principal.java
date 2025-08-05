@@ -4,8 +4,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
+import com.henriquefidelis.literalura.models.DadosAutor;
 import com.henriquefidelis.literalura.models.DadosLivro;
 import com.henriquefidelis.literalura.models.DadosResposta;
 import com.henriquefidelis.literalura.service.ConsumoAPI;
@@ -46,6 +48,9 @@ public class Principal {
                     break;
                 case 2:
                     listarLivrosBuscados();
+                    break;
+                case 3:
+                    listarAutoresRegistrados();
                     break;
                 case 5:
                     listarLivrosBuscadosPorIdioma();
@@ -107,6 +112,21 @@ public class Principal {
             livrosFiltrados.forEach(System.out::println);
         }
 
+    }
+
+    public void listarAutoresRegistrados() {
+        System.out.print("\nDigite o nome de um autor: ");
+        var nomeAutor = sc.nextLine().toLowerCase();
+
+        Optional<DadosAutor> autorEncontrado = dadosLivros.stream()
+                .flatMap(l -> l.autores().stream())
+                .filter(a -> a.nome().toLowerCase().contains(nomeAutor)).findFirst();
+        
+        if (autorEncontrado.isPresent()) {
+            System.out.println(autorEncontrado.get().nome());
+        } else {
+            System.out.println("Nenhum autor foi encontrado");
+        }
     }
 
 }
