@@ -27,7 +27,7 @@ public class Principal {
         while (opcao != 0) {
             System.out.println("==============================================");
             var menu = """
-                    1 - Buscar livro pelo tírulo
+                    1 - Buscar livro pelo título
                     2 - Listar livros registrados
                     3 - Listar autores registrados
                     4 - Listar autores vivos em um determinado ano
@@ -46,6 +46,9 @@ public class Principal {
                     break;
                 case 2:
                     listarLivrosBuscados();
+                    break;
+                case 5:
+                    listarLivrosBuscadosPorIdioma();
                     break;
                 case 0:
                     System.out.println("Saindo...");
@@ -80,6 +83,30 @@ public class Principal {
         } else {
             dadosLivros.forEach(System.out::println);
         }
+    }
+
+    private void listarLivrosBuscadosPorIdioma() {
+        var menuIdiomas = """
+                \nes - espanhol
+                en - inglês
+                fr - francês
+                pt - português
+
+                Escolha o idioma para realizar a busca:
+                """;
+        System.out.print(menuIdiomas);
+        var escolhaIdioma = sc.nextLine().toLowerCase();
+
+        List<DadosLivro> livrosFiltrados = dadosLivros.stream()
+                .filter(l -> l.idiomas() != null && l.idiomas().contains(escolhaIdioma))
+                .toList();
+        if (livrosFiltrados.isEmpty()) {
+            System.out.println("Não foi encontrado nenhum livro no idioma escolhido");
+        } else {
+            System.out.println("LIVROS NO IDIOMA ESCOLHIDO");
+            livrosFiltrados.forEach(System.out::println);
+        }
+
     }
 
 }
