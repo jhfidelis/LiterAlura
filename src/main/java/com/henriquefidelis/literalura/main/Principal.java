@@ -52,6 +52,9 @@ public class Principal {
                 case 3:
                     listarAutoresRegistrados();
                     break;
+                case 4:
+                    listarAutoresVivosPorAno();
+                    break;
                 case 5:
                     listarLivrosBuscadosPorIdioma();
                     break;
@@ -121,11 +124,31 @@ public class Principal {
         Optional<DadosAutor> autorEncontrado = dadosLivros.stream()
                 .flatMap(l -> l.autores().stream())
                 .filter(a -> a.nome().toLowerCase().contains(nomeAutor)).findFirst();
-        
+
         if (autorEncontrado.isPresent()) {
             System.out.println(autorEncontrado.get().nome());
         } else {
             System.out.println("Nenhum autor foi encontrado");
+        }
+    }
+
+    public void listarAutoresVivosPorAno() {
+        System.out.print("Digite um ano para ser pesquisado: ");
+        var anoPesquisado = sc.nextInt();
+        sc.nextLine();
+
+        List<DadosAutor> autoresVivos = dadosLivros.stream()
+                .flatMap(l -> l.autores().stream()).distinct()
+                .filter(a -> a.anoDeNascimento() != null
+                        && a.anoDeNascimento() <= anoPesquisado
+                        && (a.anoDeFalecimento() == null || a.anoDeFalecimento() > anoPesquisado))
+                .toList();
+
+        if (autoresVivos.isEmpty()) {
+            System.out.println("Não foi encontrado autores vivos no ano de " + anoPesquisado);
+        } else {
+            System.out.println("Autores vivos em " + anoPesquisado);
+            autoresVivos.forEach(System.out::println);
         }
     }
 
